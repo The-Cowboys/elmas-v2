@@ -28,10 +28,7 @@ final class TontosClient(client: Client[IO], token: String) {
 
   def postTonto(id: Int): IO[Unit] =
     IO.println(s"Posting tonto for cowboy with id: $id") *> client.expect[Unit](
-      Request[IO](
-        method = Method.POST,
-        uri = url / "tontos"
-      )
+      Request[IO](Method.POST, url / "tontos")
         .withEntity(TontoRequest(id))
         .withHeaders(
           Header("Content-Type", "application/json"),

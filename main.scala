@@ -17,16 +17,15 @@ object Main extends IOApp.Simple {
   override def run: IO[Unit] =
     dependencies
       .use { (client, conf) =>
-        val tontosClient = TontosClient(client, "token")
-        val emailClient  = EmailClient()
+        val tontosClient = TontosClient(client, conf.apiAuthToken)
+        val emailClient  = EmailClient(client, conf.emailAuthToken)
         tontosClient.fetchCowboys
           .flatTap(show)
           .flatMap { cowboys =>
             val tonto = random(cowboys)
-            IO.both(
-              tontosClient.postTonto(tonto.id),
+            
+            tontosClient.postTonto(tonto.id) *>
               emailClient.sendEmail(cowboys, tonto)
-            )
           }
       }
       .handleErrorWith(e => IO.println(s"Error: $e"))

@@ -1,13 +1,12 @@
 import cats.effect.*
-import pureconfig.*
-import pureconfig.error.ConfigReaderFailures
-import pureconfig.generic.derivation.default.*
-import pureconfig.module.catseffect.syntax.*
 
 case class AppConf(
     apiAuthToken: String,
     emailAuthToken: String
-) derives ConfigReader
+)
 
 def loadConfig: IO[AppConf] =
-  ConfigSource.file("./app.conf").loadF[IO, AppConf]()
+    for {
+        apiToken   <- IO.fromOption(sys.env.get("TOKEN_API"))(RuntimeException("TOKEN_API not found"))
+        emailToken <- IO.fromOption(sys.env.get("TOKEN_EMAIL"))(RuntimeException("TOKEN_EMAIL not found"))
+    } yield AppConf(apiToken, emailToken)

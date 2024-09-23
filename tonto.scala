@@ -8,6 +8,7 @@ import java.time.temporal.ChronoField
 import scala.annotation.tailrec
 import scala.concurrent.duration.*
 import scala.concurrent.duration.TimeUnit
+import scala.util.Random
 
 import PrettyDuration.PrettyPrintableDuration
 import cats.effect.*
@@ -18,6 +19,11 @@ class Tonto(client: TontosClient, email: EmailClient) {
     private def show(cowboys: List[Cowboy]): IO[Unit] =
         IO.println(s"Cowboys: ${cowboys.length}") *>
             cowboys.traverse_ { it => IO.println(s"\t- ${it.name}, ${it.id}, ${it.email}") }
+
+    private def random(cowboys: List[Cowboy]): Cowboy =
+        val list  = Random.shuffle(cowboys)
+        val index = Random.nextInt(list.length)
+        list(index)
 
     private def exec: IO[Unit] =
         client.fetchCowboys

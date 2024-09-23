@@ -5,29 +5,16 @@ import org.http4s.ember.client.*
 
 object Main extends IOApp.Simple {
 
-  def show(cowboys: List[Cowboy]): IO[Unit] =
-    IO.println(s"Cowboys: ${cowboys.length}") *>
-      cowboys.traverse_ { it => IO.println(s"\t- ${it.name}, ${it.id}, ${it.email}") }
-
-  def dependencies: Resource[IO, (Client[IO], AppConf)] = for {
-    client <- EmberClientBuilder.default[IO].build
-    conf   <- loadConfig.toResource
-  } yield (client, conf)
+  def dependencies: Resource[IO, Tonto] = for {
+    client      <- EmberClientBuilder.default[IO].build
+    conf        <- loadConfig.toResource
+    tontosClient = TontosClient(client, conf.apiAuthToken)
+    emailClient  = EmailClient(client, conf.emailAuthToken)
+  } yield Tonto(tontosClient, emailClient)
 
   override def run: IO[Unit] =
     dependencies
-      .use { (client, conf) =>
-        val tontosClient = TontosClient(client, conf.apiAuthToken)
-        val emailClient  = EmailClient(client, conf.emailAuthToken)
-        tontosClient.fetchCowboys
-          .flatTap(show)
-          .flatMap { cowboys =>
-            val tonto = random(cowboys)
-            
-            tontosClient.postTonto(tonto.id) *>
-              emailClient.sendEmail(cowboys, tonto)
-          }
-      }
+      .use(_.run)
       .handleErrorWith(e => IO.println(s"Error: $e"))
       .void
 

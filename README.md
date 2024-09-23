@@ -6,3 +6,13 @@
 
 
 ...but this time in Scala using Scala CLI.
+
+## Run in Production
+
+### Requirements
+
+Install Scala CLI in the server
+
+### How To
+
+Add the `run.sh` script to the instance PM2.

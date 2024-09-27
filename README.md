@@ -11,8 +11,10 @@
 
 ### Requirements
 
-Install Scala CLI in the server
+Use `run.sh` to run `./bin/Main`.
 
 ### How To
+
+We use PM2.
 
 Add the `run.sh` script to the instance PM2.

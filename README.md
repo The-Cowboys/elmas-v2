@@ -9,18 +9,20 @@
 
 ## Run in Production
 
-Our server uses PM2 for managing running processes. PM2 allows configuring the process with a configuration file.
+Our server uses PM2 for managing running processes. 
 
-The app includes a template file for starting its procces.
+PM2 allows configuring processes with configuration files.
 
-### How To
+The app includes a template file for starting its process.
+
+### How-To
 
 1) SSH into the server.
 
-2) Go to the location of the cloned repo.
+2) CD into the cloned repo: `cd elmas-v2`
 
 3) Copy the template file: `cp template.process.yaml proccess.yaml`
 
-4) Add env vars to the file.
+4) Configure env vars by editing `proccess.yaml`
 
 5) Setup the process for running the app: `pm2 start process.yaml`

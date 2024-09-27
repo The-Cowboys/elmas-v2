@@ -1,3 +1,2 @@
 #!/bin/bash
-
-./bin/Main
+java -jar ./bin/Main

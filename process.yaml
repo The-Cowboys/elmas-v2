@@ -1,0 +1,7 @@
+apps:
+  - name: elmas-v2
+    script: run.sh
+    env:
+      TOKEN_API: "some token - api"
+      TOKEN_EMAIL: "some token - email"
+

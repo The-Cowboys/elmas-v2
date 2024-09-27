@@ -9,12 +9,18 @@
 
 ## Run in Production
 
-### Requirements
+Our server uses PM2 for managing running processes. PM2 allows configuring the process with a configuration file.
 
-Use `run.sh` to run `./bin/Main`.
+The app includes a template file for starting its procces.
 
 ### How To
 
-We use PM2.
+1) SSH into the server.
 
-Add the `run.sh` script to the instance PM2.
+2) Go to the location of the cloned repo.
+
+3) Copy the template file: `cp template.process.yaml proccess.yaml`
+
+4) Add env vars to the file.
+
+5) Setup the process for running the app: `pm2 start process.yaml`

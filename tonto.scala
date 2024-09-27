@@ -31,15 +31,20 @@ class Tonto(client: TontosClient, email: EmailClient) {
             .flatMap { cowboys =>
                 val tonto = random(cowboys)
 
-                IO.println(s"Tonto: $tonto") *>
+                IO.println(s"Tonto: $tonto") /**>
                     client.postTonto(tonto.id) *>
-                    email.sendEmail(cowboys, tonto)
+                    email.sendEmail(cowboys, tonto)*/
             }
 
-    def run: IO[Nothing] =
+    def loop(work: IO[Unit]): IO[Nothing] =
         waitTimeUntil(LocalTime.of(6, 0))
             .flatMap(IO.sleep)
             .flatMap(_ => exec)
             .foreverM
+
+    def run: IO[Nothing] =
+        loop {
+            exec
+        }
 
 }

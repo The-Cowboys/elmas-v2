@@ -26,3 +26,19 @@ The app includes a template file for starting its process.
 4) Configure env vars by editing `proccess.yaml`
 
 5) Setup the process for running the app: `pm2 start process.yaml`
+
+## Release
+
+1) Package with:
+
+`scala-cli package . -o ./bin/Main -f`
+
+2) Commit the binary.
+
+### Rollout the update
+
+1) SSH into the server.
+
+2) CD into the repo: `cd elmas-v2`
+
+3) Reload with `pm2 reload process.yaml`

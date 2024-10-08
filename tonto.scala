@@ -30,10 +30,9 @@ class Tonto(client: TontosClient, email: EmailClient) {
             .flatTap(show)
             .flatMap { cowboys =>
                 val tonto = random(cowboys)
-
-                IO.println(s"Tonto: $tonto") /**>
+                IO.println(s"Tonto: $tonto") *>
                     client.postTonto(tonto.id) *>
-                    email.sendEmail(cowboys, tonto)*/
+                    email.sendEmail(cowboys, tonto)
             }
 
     def loop(work: IO[Unit]): IO[Nothing] =

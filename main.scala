@@ -12,13 +12,13 @@ object Main extends IOApp {
         emailClient  = EmailClient(client, conf.emailAuthToken)
     } yield Tonto(tontosClient, emailClient)
 
-    override def run(args: List[String]): IO[ExitCode] =
-        run.as(ExitCode.Success)
-
-    def run: IO[Unit] =
+    override def run(args: List[String]): IO[ExitCode] = {
+        val runNow = args.contains("now")
         dependencies
-            .use(_.run)
+            .use(tonto => tonto.run(runNow))
             .handleErrorWith(e => IO.println(s"Error: $e"))
             .void
+            .as(ExitCode.Success)
+    }
 
 }

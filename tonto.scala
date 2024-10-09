@@ -35,15 +35,15 @@ class Tonto(client: TontosClient, email: EmailClient) {
                     email.sendEmail(cowboys, tonto)
             }
 
-    def loop(work: IO[Unit]): IO[Nothing] =
+    private def loop(work: IO[Unit]): IO[Nothing] =
         waitTimeUntil(LocalTime.of(6, 0))
             .flatMap(IO.sleep)
             .flatMap(_ => exec)
             .foreverM
 
-    def run: IO[Nothing] =
-        loop {
-            exec
-        }
+    def run(runNow: Boolean): IO[Unit] = {
+        if runNow then exec
+        else loop { exec }
+    }
 
 }

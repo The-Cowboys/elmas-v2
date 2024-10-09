@@ -3,7 +3,7 @@ import cats.syntax.all.*
 import org.http4s.client.Client
 import org.http4s.ember.client.*
 
-val version = "1.0.0"
+val version = "1.0.1"
 
 object Main extends IOApp {
 

@@ -41,4 +41,6 @@ The app includes a template file for starting its process.
 
 2) CD into the repo: `cd elmas-v2`
 
-3) Reload with `pm2 reload process.yaml`
+3) Git pull
+
+4) Reload with `pm2 reload process.yaml`

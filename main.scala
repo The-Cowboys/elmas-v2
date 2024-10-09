@@ -3,6 +3,8 @@ import cats.syntax.all.*
 import org.http4s.client.Client
 import org.http4s.ember.client.*
 
+val version = "1.0.0"
+
 object Main extends IOApp {
 
     def dependencies: Resource[IO, Tonto] = for {
@@ -14,11 +16,12 @@ object Main extends IOApp {
 
     override def run(args: List[String]): IO[ExitCode] = {
         val runNow = args.contains("now")
-        dependencies
-            .use(tonto => tonto.run(runNow))
-            .handleErrorWith(e => IO.println(s"Error: $e"))
-            .void
-            .as(ExitCode.Success)
+        IO.println(s"Version: $version") *>
+            dependencies
+                .use(tonto => tonto.run(runNow))
+                .handleErrorWith(e => IO.println(s"Error: $e"))
+                .void
+                .as(ExitCode.Success)
     }
 
 }

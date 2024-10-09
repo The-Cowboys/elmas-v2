@@ -21,19 +21,23 @@ case class TontoRequest(
 
 final class TontosClient(client: Client[IO], token: String) {
 
-  val url = uri"https://thecowboys.duckdns.org/api"
+    val url = uri"https://thecowboys.one/api"
 
-  def fetchCowboys: IO[List[Cowboy]] =
-    client.expect[List[Cowboy]](url / "cowboys")
+    def fetchCowboys: IO[List[Cowboy]] =
+        client.expect[List[Cowboy]](url / "cowboys")
 
-  def postTonto(id: Int): IO[Unit] =
-    IO.println(s"Posting tonto for cowboy with id: $id") *> client.expect[Unit](
-      Request[IO](Method.POST, url / "tontos")
-        .withEntity(TontoRequest(id))
-        .withHeaders(
-          Header("Content-Type", "application/json"),
-          Header("Authorization", s"Bearer $token")
-        )
-    ) *> IO.println(s"Posted tonto for cowboy with id: $id")
+    def postTonto(id: Int): IO[Unit] =
+        IO.println(s"Posting tonto for cowboy with id: $id") *>
+            client
+                .expect[Json](
+                    Request[IO](Method.POST, url / "tontos")
+                        .withEntity(TontoRequest(id))
+                        .withHeaders(
+                            Header("Content-Type", "application/json"),
+                            Header("Authorization", s"Bearer $token")
+                        )
+                )
+                .flatMap(IO.println) *>
+            IO.println(s"Posted tonto for cowboy with id: $id")
 
 }

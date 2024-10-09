@@ -1,5 +1,6 @@
 import cats.effect.{ IO, Resource }
 import io.circe.Json
+import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.*
 import org.http4s.circe.*
@@ -19,12 +20,12 @@ final class EmailClient(internal: Client[IO], token: String) {
     )(internal)
 
     def sendEmail(cowboys: List[Cowboy], tonto: Cowboy): IO[Unit] =
-        val receivers = cowboys.map(_.email)
+        val receivers = List("franconecat@gmail.com","menoscharla@gmail.com") // cowboys.map(_.email)
         val emailPayload = Json.obj(
             "from"    -> "The Cowboys <tonto@thecowboys.one>".asJson,
             "to"      -> receivers.asJson,
-            "subject" -> "Hello World".asJson,
-            "html"    -> "<p>Congrats on sending your <strong>first email</strong>!</p>".asJson
+            "subject" -> "El más tonto del día es...".asJson,
+            "html"    -> s"<p>Felicidades, <strong>${tonto.name}</strong> es el más tonto :D</p>".asJson
         )
 
         IO.println("Sending emails") *> client.expect[Unit](

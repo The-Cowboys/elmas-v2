@@ -19,7 +19,7 @@ final class EmailClient(internal: Client[IO], token: String) {
   )(internal)
 
   def sendEmail(cowboys: List[Cowboy], tonto: Cowboy): IO[Unit] =
-    val receivers = List("franconecat@gmail.com", "menoscharla@gmail.com") // cowboys.map(_.email)
+    val receivers = cowboys.map(_.email)
     val emailPayload = Json.obj(
       "from"    -> "The Cowboys <tonto@thecowboys.one>".asJson,
       "to"      -> receivers.asJson,

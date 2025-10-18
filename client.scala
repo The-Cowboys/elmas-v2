@@ -1,12 +1,6 @@
 import cats.effect.*
-import io.circe.*
-import io.circe.generic.auto.*
-import io.circe.literal.*
-import org.http4s.*
-import org.http4s.circe.CirceEntityCodec.*
-import org.http4s.client.Client
-import org.http4s.dsl.io.*
-import org.http4s.implicits.*
+import sttp.client4.Response
+import sttp.client4.quick.*
 
 case class Cowboy(
     email: String,
@@ -19,24 +13,30 @@ case class TontoRequest(
     id: Int
 )
 
-final class TontosClient(client: Client[IO], token: String) {
+final class TontosClient(token: String) {
 
-    val url = uri"https://thecowboys.one/api"
+    val base = "http://34.135.73.247/api"
 
-    def fetchCowboys: IO[List[Cowboy]] =
-        client.expect[List[Cowboy]](url / "cowboys")
+    def fetchCowboys: IO[List[Cowboy]] = IO.blocking {
+        val lol = quickRequest.get(uri"$base/cowboys").send()
+        println(lol.body)
+        List.empty
+    }.onError(e => IO.println(s"ERROR: GET $base") *> IO(e.printStackTrace()))
 
     def postTonto(id: Int): IO[Unit] =
         IO.println(s"Posting tonto for cowboy with id: $id") *>
-            client
+            IO.blocking {
+                "Nothing!!"
+            }
+            /*client
                 .expect[Json](
-                    Request[IO](Method.POST, url / "tontos")
+                    Request[IO](Method.POST, uri"$base/cowboys")
                         .withEntity(TontoRequest(id))
                         .withHeaders(
                             Header("Content-Type", "application/json"),
                             Header("Authorization", s"Bearer $token")
                         )
-                )
+                )*/
                 .flatMap(IO.println) *>
             IO.println(s"Posted tonto for cowboy with id: $id")
 

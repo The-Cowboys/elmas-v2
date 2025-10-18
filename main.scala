@@ -1,16 +1,14 @@
 import cats.effect.*
-import cats.syntax.all.*
-import org.http4s.client.Client
 import org.http4s.ember.client.*
 
 val version = "1.0.1"
 
 object Main extends IOApp {
 
-    def dependencies: Resource[IO, Tonto] = for {
+    private def dependencies: Resource[IO, Tonto] = for {
         client      <- EmberClientBuilder.default[IO].build
         conf        <- loadConfig.toResource
-        tontosClient = TontosClient(client, conf.apiAuthToken)
+        tontosClient = TontosClient(client, conf.apiUrl, conf.apiAuthToken)
         emailClient  = EmailClient(client, conf.emailAuthToken)
     } yield Tonto(tontosClient, emailClient)
 

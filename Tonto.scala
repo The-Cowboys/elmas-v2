@@ -1,16 +1,7 @@
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Period
-import java.time.ZoneId
-import java.time.temporal.ChronoField
-import scala.annotation.tailrec
 import scala.concurrent.duration.*
-import scala.concurrent.duration.TimeUnit
 import scala.util.Random
 
-import PrettyDuration.PrettyPrintableDuration
 import cats.effect.*
 import cats.syntax.all.*
 
@@ -33,6 +24,9 @@ class Tonto(client: TontosClient, email: EmailClient) {
                 IO.println(s"Tonto: $tonto") *>
                     client.postTonto(tonto.id) *>
                     email.sendEmail(cowboys, tonto)
+            }
+            .handleErrorWith { e =>
+                IO.println(s"Error during exec: $e")
             }
 
     private def loop(work: IO[Unit]): IO[Nothing] =

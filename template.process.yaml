@@ -4,4 +4,4 @@ apps:
     env:
       TOKEN_API: "some token - api"
       TOKEN_EMAIL: "some token - email"
-
+      API_URL: "http://localhost:3000/api"

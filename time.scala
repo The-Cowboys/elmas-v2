@@ -1,27 +1,20 @@
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
-import java.time.ZoneId
-import java.time.temporal.ChronoField
-import scala.annotation.tailrec
-import scala.concurrent.duration.*
-import scala.concurrent.duration.TimeUnit
-
 import PrettyDuration.PrettyPrintableDuration
 import cats.effect.*
+
+import java.time.{LocalDateTime, LocalTime, ZoneId}
+import scala.annotation.tailrec
+import scala.concurrent.duration.*
 
 def waitTimeUntil(scheduledTime: LocalTime): IO[FiniteDuration] = IO.realTimeInstant.flatMap { instant =>
     val zone = ZoneId.systemDefault()
 
     val now         = LocalDateTime.ofInstant(instant, zone)
-    val adjustedNow = LocalDateTime.of(now.toLocalDate(), scheduledTime)
+    val adjustedNow = LocalDateTime.of(now.toLocalDate, scheduledTime)
 
     val next       = if now.isAfter(adjustedNow) then adjustedNow.plusDays(1) else adjustedNow
-    val nextMillis = next.atZone(zone).toInstant().toEpochMilli()
+    val nextMillis = next.atZone(zone).toInstant.toEpochMilli
 
-    val wait = (nextMillis - instant.toEpochMilli()).millis
+    val wait = (nextMillis - instant.toEpochMilli).millis
 
     IO.println(s"now: $now") *>
         IO.println(s"next: $next") *>
@@ -32,7 +25,7 @@ def waitTimeUntil(scheduledTime: LocalTime): IO[FiniteDuration] = IO.realTimeIns
 
 object PrettyDuration {
 
-    val timeUnitList: List[TimeUnit] =
+    private val timeUnitList: List[TimeUnit] =
         DAYS :: HOURS :: MINUTES :: SECONDS :: MILLISECONDS :: MICROSECONDS :: NANOSECONDS :: Nil
 
     implicit class PrettyPrintableDuration(val duration: Duration) extends AnyVal {

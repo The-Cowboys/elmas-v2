@@ -7,6 +7,19 @@
 
 ...but this time in Scala using Scala CLI.
 
+
+## Run Locally
+
+1) Install Scala CLI: https://scala-cli.virtuslab.org/install
+
+2) Clone the repo: `git clone`
+
+3) CD into the cloned repo: `cd elmas-v2`
+
+4) Run with: `scala-cli run .`
+
+
+
 ## Run in Production
 
 Our server uses PM2 for managing running processes. 

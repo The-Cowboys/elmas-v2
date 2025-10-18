@@ -30,10 +30,13 @@ The app includes a template file for starting its process.
 ## Release
 
 1) Package with:
+    ```
+    scala-cli package . -o ./bin/Main -f
+    ```
 
-`scala-cli package . -o ./bin/Main -f`
+2) Update version
 
-2) Commit the binary.
+3) Commit changes.
 
 ### Rollout the update
 

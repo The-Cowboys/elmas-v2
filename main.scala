@@ -1,7 +1,7 @@
 import cats.effect.*
 import org.http4s.ember.client.*
 
-val version = "1.0.1"
+val version = "1.0.2"
 
 object Main extends IOApp {
 

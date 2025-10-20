@@ -23,10 +23,10 @@ final class TontosClient(client: Client[IO], apiUrl: Uri, token: String) {
     def fetchCowboys: IO[List[Cowboy]] =
         IO.println(s"Fetching cowboys to: $apiUrl") *> client.expect[List[Cowboy]](apiUrl / "cowboys")
 
-    def postTonto(id: Int): IO[Unit] =
+    def postTonto(id: Int): IO[Cowboy] =
         IO.println(s"Posting tonto for cowboy ($id) to $apiUrl") *>
             client
-                .expect[Json](
+                .expect[Cowboy](
                     Request[IO](Method.POST, apiUrl / "tontos")
                         .withEntity(TontoRequest(id))
                         .withHeaders(
@@ -34,7 +34,6 @@ final class TontosClient(client: Client[IO], apiUrl: Uri, token: String) {
                             Header.Raw(CIString("Authorization"), s"Bearer $token")
                         )
                 )
-                .flatMap(IO.println) *>
-            IO.println(s"Posted tonto for cowboy with id: $id")
+                .flatTap(cowboy => IO.println(s"Received response: $cowboy"))
 
 }

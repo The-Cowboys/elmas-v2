@@ -16,18 +16,24 @@ class Tonto(client: TontosClient, email: EmailClient) {
         val index = Random.nextInt(list.length)
         list(index)
 
-    private def exec: IO[Unit] =
-        client.fetchCowboys
+    private def exec: IO[Unit] = {
+        IO.realTimeInstant.flatTap { instant =>
+            IO.println(s"Executing at: $instant")
+        } *> client.fetchCowboys
             .flatTap(show)
             .flatMap { cowboys =>
                 val tonto = random(cowboys)
-                IO.println(s"Tonto: $tonto") *>
-                    client.postTonto(tonto.id) *>
-                    email.sendEmail(cowboys, tonto)
+                for {
+                    _           <- IO.println(s"Random tonto: ${tonto.name}, id: ${tonto.id}")
+                    cowboyTonto <- client.postTonto(tonto.id)
+                    _           <- IO.println(s"Sending email with tonto cowboy: $cowboyTonto")
+                    _           <- email.sendEmail(cowboys, cowboyTonto)
+                } yield ()
             }
             .handleErrorWith { e =>
                 IO.println(s"Error during exec: $e")
             }
+    }
 
     private def loop(work: IO[Unit]): IO[Nothing] =
         waitTimeUntil(LocalTime.of(6, 0))

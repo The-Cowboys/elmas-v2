@@ -1,3 +1,4 @@
+import AppConf.EmailSender
 import cats.effect.IO
 import io.circe.Json
 import io.circe.syntax.*
@@ -8,7 +9,7 @@ import org.http4s.client.middleware.Logger
 import org.http4s.implicits.*
 import org.typelevel.ci.CIString
 
-final class EmailClient(internal: Client[IO], token: String) {
+final class EmailClient(internal: Client[IO], token: String, senderEmail: EmailSender) {
 
     val url = uri"https://api.resend.com/emails"
 
@@ -21,7 +22,7 @@ final class EmailClient(internal: Client[IO], token: String) {
     def sendEmail(cowboys: List[Cowboy], tonto: Cowboy): IO[Unit] =
         val receivers = cowboys.map(_.email)
         val emailPayload = Json.obj(
-            "from"    -> "The Cowboys <tonto@thecowboys.one>".asJson,
+            "from"    -> senderEmail.value.asJson,
             "to"      -> receivers.asJson,
             "subject" -> "El más tonto del día es...".asJson,
             "html"    -> s"<p>Felicidades, <strong>${tonto.name}</strong> es el más tonto :D</p>".asJson

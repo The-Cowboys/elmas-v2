@@ -9,7 +9,7 @@ object Main extends IOApp {
         client      <- EmberClientBuilder.default[IO].build
         conf        <- loadConfig.toResource
         tontosClient = TontosClient(client, conf.apiUrl, conf.apiAuthToken)
-        emailClient  = EmailClient(client, conf.emailAuthToken)
+        emailClient  = EmailClient(client, conf.emailAuthToken, conf.senderEmail)
     } yield Tonto(tontosClient, emailClient)
 
     override def run(args: List[String]): IO[ExitCode] = {
